@@ -6,6 +6,7 @@ import {
 } from '@material-ui/core';
 
 import Download from './Download';
+import  DownloadResource from './DownloadResource';
 import Languages from './Languages';
 import styles from '../styles';
 
@@ -41,6 +42,7 @@ export const Component = ({
         setContext={setContext}
       />
       <Download context={context} />
+      <DownloadResource context={context} />
       <Suspense fallback={loadingComponent}>
         {resources.map(resourceId => (
           <Resource

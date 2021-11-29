@@ -178,15 +178,38 @@ async function fetchRepositoryZipFile({organization, repository, branch}) {
     return null;
   }
   const uri = zipUri({organization, repository, branch});
+  
   const response = await fetch(uri);
+ 
   if (response.status === 200 || response.status === 0) {
     const zipArrayBuffer = await response.arrayBuffer(); // blob storage not supported on mobile
+  
     await zipStore.setItem(uri, zipArrayBuffer);
     return true;
   } else {
     return false;
   }
 };
+
+export async function fetchSpecifiedZipFile({organization, repository, branch}) {
+  const repoExists = await repositoryExists({organization, repository});
+  if (!repoExists) {
+    return null;
+  }
+  const uri = zipUri({organization, repository, branch});
+  
+  const response = await fetch(uri);
+ 
+  if (response.status === 200 || response.status === 0) {
+    const zipArrayBuffer = await response.arrayBuffer(); // blob storage not supported on mobile
+  
+    await zipStore.setItem(uri, zipArrayBuffer);
+    return true;
+  } else {
+    return false;
+  }
+};
+
 
 async function getFileFromZip({organization, repository, path, branch}) {
   let file;
