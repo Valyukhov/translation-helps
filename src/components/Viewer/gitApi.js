@@ -191,18 +191,21 @@ async function fetchRepositoryZipFile({organization, repository, branch}) {
   }
 };
 
-export async function fetchSpecifiedZipFile({organization, repository, branch}) {
+export async function fetchSpecifiedZipFile({organization, repository,url, branch}) {
+ 
   const repoExists = await repositoryExists({organization, repository});
   if (!repoExists) {
+    
     return null;
   }
-  const uri = zipUri({organization, repository, branch});
+  console.log(organization, repository)
+  const uri = url;
   
   const response = await fetch(uri);
  
   if (response.status === 200 || response.status === 0) {
     const zipArrayBuffer = await response.arrayBuffer(); // blob storage not supported on mobile
-  
+  console.log(zipArrayBuffer);
     await zipStore.setItem(uri, zipArrayBuffer);
     return true;
   } else {
@@ -225,6 +228,24 @@ async function getFileFromZip({organization, repository, path, branch}) {
     file = null;
   }
   return file;
+};
+export async function getSpecifiedFileFromZip({ repository,url,  path}) {
+  let file;
+  const uri = url;
+  console.log(path);
+  const zipBlob = await zipStore.getItem(uri);
+  try {
+    if (zipBlob) {
+      const zip = await JSZip.loadAsync(zipBlob);
+      const zipPath = Path.join(repository.toLowerCase(), path);
+      file = await zip.file(zipPath).async("string");
+    }
+  } catch(error) {
+    file = null;
+  }
+  console.log(file);
+  return file;
+ 
 };
 
 function zipUri({organization, repository, branch='master'}) {

@@ -19,28 +19,31 @@ import * as gitApi from '../../gitApi';
 
 const Component = ({
   classes,
-  context: {
-    organization,
-    languageId,
-  },
+  
 }) => {
   const [downloading, setDownloading] = useState(false);
   const [complete, setComplete] = useState(false);
   const [error, setError] = useState(false);
-  const [value,setValue] = useState('');
-  const [organiz,setOrganiz] = useState('');
-  const [lang,setLang] = useState('');
+  const [url,setUrl] = useState('');
+  const [organization,setOrganization] = useState('');
+  const [repository,setRepository] = useState('');
+  const [path,setPath] = useState('');
+  
   const onChange = (event) =>{
    
-    setValue(event.target.value)
+    setUrl(event.target.value)
   }
   const onChangeOrg = (event) =>{
    
-    setOrganiz(event.target.value)
+    setOrganization(event.target.value)
   }
   const onChangeLang = (event) =>{
    
-    setLang(event.target.value)
+    setRepository(event.target.value)
+  }
+  const onChangePath = (event) =>{
+   
+    setPath(event.target.value)
   }
 
   const subject = 'A special Resource ';
@@ -70,12 +73,16 @@ const Component = ({
           {title}
         </Typography>
         <form className={classes.root} noValidate autoComplete="off">
-  <TextField onChange = {(e)=>onChange(e)}id="standard-basic" label="Standard" />
+  <TextField onChange = {(e)=>onChange(e)}id="standard-basic" label="url" />
   
   </form><div>https://git.door43.org/ru_gl/ru_rob/archive/v1.zip</div>
-  <TextField onChange = {(e)=>onChangeOrg(e)}id="standard-basic" label="Standard" />
+  <TextField onChange = {(e)=>onChangeOrg(e)}id="standard-basic" label="organization" />
   <div>ru_gl</div>
-  <TextField onChange = {(e)=>onChangeLang(e)}id="standard-basic" label="Standard" />
+  <TextField onChange = {(e)=>onChangeLang(e)}id="standard-basic" label="repo" />
+  <div>ru_rob</div>
+  <TextField onChange = {(e)=>onChangePath(e)}id="standard-basic" label="repo" />
+  <div>08-RUT.usfm</div>
+  <div>10-2SA.usfm</div><div>57-TIT.usfm</div> 
       </CardContent>
       <CardActions className={classes.actions}>
         {component}
@@ -86,7 +93,9 @@ const Component = ({
           color="primary"
           onClick={()=>{
             setDownloading(true);
-            gitApi.fetchSpecifiedZipFile({organization, languageId, onProgress: (progress)=>{
+            
+            
+            gitApi.fetchSpecifiedZipFile({organization, repository,url, onProgress: (progress)=>{
 
             }})
             .then(response => {
@@ -96,11 +105,33 @@ const Component = ({
             })
             .catch(error => {
               setError(error);
-              console.log(error);
+              console.log({error});
             });
           }}
         >
           Download
+        </Button>
+        <Button
+          size="small"
+          variant="contained"
+          
+          color="primary"
+          onClick={()=>{
+            
+            gitApi.getSpecifiedFileFromZip({repository,url,path})
+            .then(response => {
+              
+              console.log({response});
+            })
+            .catch(error => {
+              setError(error);
+              console.log({error});
+            });
+
+          }}
+            
+        >
+          Fetch
         </Button>
       </CardActions>
     </Card>

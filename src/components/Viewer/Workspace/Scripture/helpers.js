@@ -149,6 +149,7 @@ export async function fetchFileByBookId({organization, repository, bookId, manif
   let path;
   if (project && project.path) {
     path = project.path.replace(/^\.\//, '');
+    console.log({path})
     data = await gitApi.getFile({organization, repository, path});
   }
   return data;

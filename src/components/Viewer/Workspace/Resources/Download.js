@@ -63,6 +63,7 @@ const Component = ({
           color="primary"
           onClick={()=>{
             setDownloading(true);
+            console.log(organization, languageId)
             gitApi.fetchRepositoriesZipFiles({organization, languageId, onProgress: (progress)=>{
 
             }})
