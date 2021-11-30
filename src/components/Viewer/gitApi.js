@@ -191,20 +191,15 @@ async function fetchRepositoryZipFile({organization, repository, branch}) {
   }
 };
 
-export async function fetchSpecifiedZipFile({organization, repository,url, branch}) {
+export async function fetchSpecifiedZipFile({file, branch}) {
  
-  const repoExists = await repositoryExists({organization, repository});
-  if (!repoExists) {
-    
-    return null;
-  }
-  console.log(organization, repository)
-  const uri = url;
+  
+  const uri = file[0].path;
   
   const response = await fetch(uri);
  
   if (response.status === 200 || response.status === 0) {
-    const zipArrayBuffer = await response.arrayBuffer(); // blob storage not supported on mobile
+    const zipArrayBuffer = await file[0].arrayBuffer(); // blob storage not supported on mobile
   console.log(zipArrayBuffer);
     await zipStore.setItem(uri, zipArrayBuffer);
     return true;
